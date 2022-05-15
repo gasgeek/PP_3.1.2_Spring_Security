@@ -14,19 +14,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService;
-    private final SuccessUserHandler successUserHandler;
+    private final UserDetailsService userDetailsService; // сервис, с помощью которого тащим пользователя
+    private final SuccessUserHandler successUserHandler; // класс, в котором описана логика перенаправления пользователей по ролям
 
-    public WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, SuccessUserHandler successUserHandler) {
+    public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, SuccessUserHandler successUserHandler) {
         this.userDetailsService = userDetailsService;
         this.successUserHandler = successUserHandler;
     }
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder()); // конфигурация для прохождения аутентификации
     }
 
     @Override
@@ -35,14 +35,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(new SuccessUserHandler())
                 .loginProcessingUrl("/login");
 
-        http.authorizeRequests()//
-                .antMatchers("/login").anonymous()
+        http.authorizeRequests()// подключаем наш SuccessHandler для перенеправления по ролям
+                .antMatchers("/login").anonymous() // доступность всем
                 .antMatchers("/").authenticated()
                 .antMatchers("/admin/**").access("hasAnyRole('ROLE_ADMIN')")
-                .and().formLogin();
-        http.csrf().disable();
+                .and().formLogin();  // Spring сам подставит свою логин форму
+        http.csrf().disable(); //выключаем кроссдоменную секьюрность
     }
 
+    // Необходимо для шифрования паролей
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
