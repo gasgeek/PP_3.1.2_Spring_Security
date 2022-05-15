@@ -2,44 +2,53 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Users</title>
+    <title>User list</title>
 </head>
 <body>
+<h2>User list</h2>
 <div>
-    <div>
-        <h2>Users</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Email</th>
-                <th>Password</th>
-                <th>Age</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="user : ${users}">
-                <td th:text="${user.getId()}"></td>
-                <td th:text="${user.getName()}"></td>
-                <td th:text="${user.getSurname()}"></td>
-                <td th:text="${user.getEmail()}"></td>
-                <td th:text="${user.getPassword()}"></td>
-                <td th:text="${user.getAge()}"></td>
-                <td><a th:href="@{admin/user-update/{id}(id=${user.id})}">Edit</a></td>
-                <td><a th:href="@{admin/user-delete/{id}(id=${user.id})}">Delete</a></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <p><a href="/admin/user-create">Create user</a></p>
 
-    <div th:align="bottom">
-        <form th:method="GET" th:action="@{/logout}">
-            <input type="submit" value="Exit">
-        </form>
-    </div>
+    <hr/>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Lastname</th>
+            <th>Age</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+
+        <tr th:each="user : ${userSet}">
+            <td th:text="${user.getId()}">ID</td>
+            <td th:text="${user.getName()}">Name</td>
+            <td th:text="${user.getLastName()}">Lastname</td>
+            <td th:text="${user.getAge()}">Age</td>
+            <td th:text="${user.getEmail()}">Email</td>
+            <td th:text="${user.getRoles()}">Role</td>
+
+            <td>
+                <form th:action="@{/admin/users/{id}/edit(id=${user.id})}" th:object="${user}">
+                    <button type="submit">Edit</button>
+                </form>
+            </td>
+            <td>
+                <form th:method="delete" th:action="@{/admin/users/{id}/delete(id=${user.id})}">
+                    <input type="hidden" name="id" th:value="${user.id}">
+                    <button type="submit" value="Delete">Delete</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <form th:action="@{/admin/users/add}">
+        <button type="submit">Add new user</button>
+    </form>
+    <br>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Quit">
+    </form>
 </div>
+
 </body>
 </html>

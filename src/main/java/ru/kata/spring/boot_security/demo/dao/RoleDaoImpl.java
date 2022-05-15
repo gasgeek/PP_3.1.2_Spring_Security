@@ -5,9 +5,9 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Set;
 
 public class RoleDaoImpl implements RoleDao {
-
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -23,7 +23,7 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public Role getById(int id) {
+    public Role getById(Long id) {
         return entityManager.find(Role.class, id);
     }
 
@@ -31,5 +31,4 @@ public class RoleDaoImpl implements RoleDao {
     public Role getByName(String name) {
         return entityManager.createQuery("SELECT role FROM Role role WHERE role.name =:name", Role.class).setParameter("name", name).getSingleResult();
     }
-
 }

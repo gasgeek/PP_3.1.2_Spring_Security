@@ -1,42 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<meta charset="UTF-8">
 <head>
-    <title>Create user</title>
+    <meta charset="UTF-8">
+    <title>Create new user</title>
 </head>
 <body>
-<form action="#" th:action="@{/admin/user-update}" th:object="${user}" method="post">
-    <label for="id">ID</label>
-    <input readonly type="number" th:field="*{id}" id="id" placeholder="Id">
+<h2>Add user</h2>
+<div>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Quit">
+    </form>
+    <br>
+    <form method="POST" th:action="@{/admin/users/add}" th:object="${user}">
+        <fieldset>
+            <legend>User data</legend>
+            <label for="name">Enter name</label>
+            <input type="text" th:field="*{name}" id="name"/>
+            <label for="lastName">Last name</label>
+            <input type="text" th:field="*{lastName}" id="lastName"/>
+            <label for="age">Age</label>
+            <input type="number" th:field="*{age}" id="age"/>
+            <label for="email">Email</label>
+            <input type="text" th:field="*{email}" id="email"/>
+            <label for="password">Password</label>
+            <input type="password" th:field="*{password}" id="password"/>
+            <label>
+                <select size="3" multiple="multiple" name="roles" id="roles">
+                    <option disabled>Roles:</option>
+                    <option value="ROLE_ADMIN">ADMIN</option>
+                    <option selected value="ROLE_USER">USER</option>
+                </select>
+            </label>
+        </fieldset>
+        <br/>
+        <button type="submit">Add user</button>
+    </form>
     <br/>
-    <label for="name">Name</label>
-    <input type="text" th:field="*{name}" id="name" placeholder="Name">
-    <br/>
-    <label for="surname">Surname</label>
-    <input type="text" th:field="*{surname}" id="surname" placeholder="Surname">
-    <br/>
-    <label for="email">Email</label>
-    <input type="text" th:field="*{email}" id="email" placeholder="Email">
-    <br/>
-    <label for="password">Password</label>
-    <input type="text" th:field="*{password}" id="password" placeholder="Password">
-    <br/>
-    <label for="age">Age</label>
-    <input type="number" th:field="*{age}" id="age" placeholder="Age">
-    <label>
-        <input type="checkbox" name="nameRoles" value="ROLE_USER"/>
-    </label>USER
-    <label>
-        <input type="checkbox" name="nameRoles" value="ROLE_ADMIN"/>
-    </label>ADMIN
-    <br/>
-    <input type="submit" value="Update user">
-
-    <div th:align="bottom">
-        <form th:method="GET" th:action="@{/logout}">
-            <input type="submit" value="Exit">
-        </form>
-    </div>
-</form>
+    <form th:action="@{/admin}">
+        <button type="submit" class="btn btn-outline-danger">Back to user list</button>
+    </form>
+</div>
 </body>
 </html>

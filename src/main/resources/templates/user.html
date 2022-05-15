@@ -12,7 +12,7 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Surname</th>
+                <th>Lastname</th>
                 <th>Email</th>
                 <th>Password</th>
                 <th>Age</th>
@@ -22,7 +22,7 @@
             <tr>
                 <td th:text="${user.getId()}"></td>
                 <td th:text="${user.getName()}"></td>
-                <td th:text="${user.getSurname()}"></td>
+                <td th:text="${user.getLastName()}"></td>
                 <td th:text="${user.getEmail()}"></td>
                 <td th:text="${user.getPassword()}"></td>
                 <td th:text="${user.getAge()}"></td>
@@ -33,7 +33,7 @@
 
     <div th:align="bottom">
         <form th:method="GET" th:action="@{/logout}">
-            <input type="submit" value="Exit">
+            <input type="submit" value="Quit">
         </form>
     </div>
 </div>

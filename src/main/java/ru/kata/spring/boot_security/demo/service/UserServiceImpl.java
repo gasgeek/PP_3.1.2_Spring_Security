@@ -1,9 +1,10 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.User;
-import javax.transaction.Transactional;
+
 import java.util.List;
 
 @Service
@@ -29,14 +30,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void removeUser(int id) {
+    public void removeUser(Long id) {
         if (userDao.getUserById(id) != null) {
             userDao.removeUser(id);
         }
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(Long id) {
         return userDao.getUserById(id);
     }
 
@@ -49,6 +50,4 @@ public class UserServiceImpl implements UserService {
     public User getUserByName(String name) {
         return userDao.getUserByName(name);
     }
-
-
 }
