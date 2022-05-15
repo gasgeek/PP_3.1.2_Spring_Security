@@ -2,77 +2,88 @@ package ru.kata.spring.boot_security.demo.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email")
+    @Column(name="age")
+    private int age;
+
+    @Column(name = "email", unique = true, length = 100)
     private String email;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "age")
-    private int age;
+    @Transient
+    private String passwordConfirm;
+
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<Role> roles;
+    @JoinTable(name = "users_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(String name, String lastName, String email, String password, int age, Set<Role> roles) {
-        this.name = name;
+    public User(String username, String lastName, int age, String email, String password) {
+        this.username = username;
         this.lastName = lastName;
+        this.age = age;
         this.email = email;
         this.password = password;
-        this.age = age;
-        this.roles = roles;
     }
 
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
 
     public String getName() {
-        return name;
+        return username;
     }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String username) {
+        this.username = username;
     }
 
     public String getLastName() {
         return lastName;
     }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-    public void setSurname(String surname) {
-        this.lastName = surname;
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -82,16 +93,13 @@ public class User implements UserDetails {
         return password;
     }
 
+    @Override
+    public String getUsername() {
+        return getEmail();
+    }
+
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public Set<Role> getRoles() {
@@ -104,12 +112,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public String getUsername() {
-        return name;
+        return getRoles();
     }
 
     @Override
@@ -132,16 +135,8 @@ public class User implements UserDetails {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", age=" + age +
-                ", roles=" + roles +
-                '}';
+    public UserDetails fromUser(User user) {
+        return new org.springframework.security.core.userdetails.User
+                (user.getEmail(), user.getPassword(), user.getRoles());
     }
 }
