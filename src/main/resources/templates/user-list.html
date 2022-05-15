@@ -2,15 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>User</title>
+    <title>Users</title>
 </head>
 <body>
 <div>
     <div>
+        <h2>Users</h2>
         <table>
             <thead>
             <tr>
-                <th>ID</th>
+                <th>Id</th>
                 <th>Name</th>
                 <th>Surname</th>
                 <th>Email</th>
@@ -19,17 +20,20 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <tr th:each="user : ${users}">
                 <td th:text="${user.getId()}"></td>
                 <td th:text="${user.getName()}"></td>
                 <td th:text="${user.getSurname()}"></td>
                 <td th:text="${user.getEmail()}"></td>
                 <td th:text="${user.getPassword()}"></td>
                 <td th:text="${user.getAge()}"></td>
+                <td><a th:href="@{admin/user-update/{id}(id=${user.id})}">Edit</a></td>
+                <td><a th:href="@{admin/user-delete/{id}(id=${user.id})}">Delete</a></td>
+            </tr>
             </tbody>
         </table>
     </div>
-
+    <p><a href="/admin/user-create">Create user</a></p>
 
     <div th:align="bottom">
         <form th:method="GET" th:action="@{/logout}">
