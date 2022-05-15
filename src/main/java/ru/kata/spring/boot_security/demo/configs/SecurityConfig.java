@@ -19,8 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService; // сервис, с помощью которого тащим пользователя
-    private final SuccessUserHandler successUserHandler; // класс, в котором описана логика перенаправления пользователей по ролям
+    private final UserDetailsService userDetailsService;
+    private final SuccessUserHandler successUserHandler;
 
     public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, SuccessUserHandler successUserHandler) {
         this.userDetailsService = userDetailsService;
@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder()); // конфигурация для прохождения аутентификации
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -38,15 +38,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(new SuccessUserHandler())
                 .loginProcessingUrl("/login");
 
-        http.authorizeRequests()// подключаем наш SuccessHandler для перенеправления по ролям
-                .antMatchers("/login").anonymous() // доступность всем
+        http.authorizeRequests()
+                .antMatchers("/login").anonymous()
                 .antMatchers("/").authenticated()
                 .antMatchers("/admin/**").access("hasAnyRole('ROLE_ADMIN')")
-                .and().formLogin();  // Spring сам подставит свою логин форму
-        http.csrf().disable(); //выключаем кроссдоменную секьюрность
+                .and().formLogin();
+        http.csrf().disable();
     }
 
-    // Необходимо для шифрования паролей
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();

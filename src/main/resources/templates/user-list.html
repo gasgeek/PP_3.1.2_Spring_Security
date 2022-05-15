@@ -28,12 +28,12 @@
             <td th:text="${user.getRoles()}">Role</td>
 
             <td>
-                <form th:action="@{/admin/users/{id}/edit(id=${user.id})}" th:object="${user}">
+                <form th:action="@{/admin/user-update{id}(id=${user.id})}" th:object="${user}">
                     <button type="submit">Edit</button>
                 </form>
             </td>
             <td>
-                <form th:method="delete" th:action="@{/admin/users/{id}/delete(id=${user.id})}">
+                <form th:method="delete" th:action="@{/admin/user-delete{id}(id=${user.id})}">
                     <input type="hidden" name="id" th:value="${user.id}">
                     <button type="submit" value="Delete">Delete</button>
                 </form>
@@ -41,7 +41,7 @@
         </tr>
     </table>
     <br>
-    <form th:action="@{/admin/users/add}">
+    <form th:action="@{/admin/user-create}">
         <button type="submit">Add new user</button>
     </form>
     <br>
