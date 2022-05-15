@@ -16,18 +16,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService; // service to hook-up user by details
-    private final SuccessUserHandler successUserHandler; // redirect users according to roles
+    private final UserDetailsService userDetailsService;
+    private final SuccessUserHandler successUserHandler;
 
     public WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, SuccessUserHandler successUserHandler) {
         this.userDetailsService = userDetailsService;
         this.successUserHandler = successUserHandler;
     }
 
-
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder()); // Configuring global security throw Authentication manager,y
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -36,15 +35,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(new SuccessUserHandler())
                 .loginProcessingUrl("/login");
 
-        http.authorizeRequests()// whe we get auth request we match them:
-                .antMatchers("/login").anonymous() // by access availability from low to high
+        http.authorizeRequests()//
+                .antMatchers("/login").anonymous()
                 .antMatchers("/").authenticated()
                 .antMatchers("/admin/**").access("hasAnyRole('ROLE_ADMIN')")
-                .and().formLogin();  // inject Spring login form
-        http.csrf().disable(); // disable csrf security
+                .and().formLogin();
+        http.csrf().disable();
     }
 
-    // Nothing to comment here
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
